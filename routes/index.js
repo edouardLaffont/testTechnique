@@ -6,9 +6,6 @@ const csv = require('fast-csv');
 const { format } = require('@fast-csv/format');
 const { writeToString } = require('@fast-csv/format');
 const router = express.Router();
-const robberyHelperController = require('../controllers/robberyHelperController');
-
-router.get('/robberyOptimization', robberyHelperController.getRobberyOptimization)
 
 router.post('/robberyOptimization', upload.single('file'), function (req, res) {
   const fileRows = [];
