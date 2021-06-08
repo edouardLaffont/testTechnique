@@ -9,20 +9,23 @@ const router = express.Router();
 
 router.post('/robberyOptimization', upload.single('file'), function (req, res) {
   const fileRows = [];
-  const kg = parseInt(req.query.kg);
+  const kg = parseFloat(req.query.kg);
   csv.parseFile(req.file.path)
     .on("data", function (data) {
       const row = {
         label: data[0],
-        price: parseInt(data[1]),
-        weight: data[2]
+        price: parseFloat(data[1].replace(/,/, '.')),
+        weight: parseFloat(data[2].replace(/,/, '.'))
       }
-      fileRows.push(row);
+      row.rate = (row.price + row.weight) / 2
+      if (row.weight <= kg) {
+        fileRows.push(row);
+      }
     })
     .on("end", function () {
       fs.unlinkSync(req.file.path);
 
-      var sortedRows = fileRows.sort(({price:a}, {price:b}) => b-a);
+      var sortedRows = fileRows.sort(({rate:a}, {rate:b}) => b-a);
       const objectsToRobb = []
       var totalWeight = 0;
 
